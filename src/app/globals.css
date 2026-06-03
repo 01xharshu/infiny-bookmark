@@ -1,0 +1,1364 @@
+/* ============================================
+   INFINY BOOKMARK — Design System
+   ============================================ */
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  /* Canvas */
+  --canvas-bg: #f5f0eb;
+  --canvas-dot: rgba(0, 0, 0, 0.04);
+  --canvas-dot-size: 1px;
+  --canvas-dot-gap: 28px;
+
+  /* Cards */
+  --card-bg: #ffffff;
+  --card-radius: 14px;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  --card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 1);
+  --card-shadow-selected: 0 0 0 3px #d1d5db, 0 16px 48px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 1);
+  --card-border: 1px solid rgba(0, 0, 0, 0.04);
+
+  /* Sidebar */
+  --sidebar-bg: rgba(255, 255, 255, 0.82);
+  --sidebar-blur: 20px;
+  --sidebar-width: 220px;
+  --sidebar-border: 1px solid rgba(0, 0, 0, 0.06);
+  --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6b6b;
+  --text-muted: #9a9a9a;
+  --text-inverse: #ffffff;
+
+  /* Accent Colors */
+  --accent-primary: #4b5563;
+  --accent-green: #22c55e;
+  --accent-coral: #f43f5e;
+  --accent-purple: #a855f7;
+  --accent-amber: #f59e0b;
+  --accent-blue: #3b82f6;
+  --accent-teal: #14b8a6;
+
+  /* Pin Colors */
+  --note-yellow: #fff9c4;
+  --note-green: #c8e6c9;
+  --note-blue: #bbdefb;
+  --note-pink: #f8bbd0;
+  --note-purple: #e1bee7;
+  --note-orange: #ffe0b2;
+  --quote-purple: #f3e5f5;
+  --quote-green: #e8f5e9;
+
+  /* Zoom Controls */
+  --controls-bg: rgba(255, 255, 255, 0.88);
+  --controls-blur: 16px;
+  --controls-radius: 12px;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-normal: 200ms ease;
+  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  color: var(--text-primary);
+  background: var(--canvas-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- App Layout ---------- */
+.app-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  overflow-y: auto;
+  transition: transform var(--transition-smooth);
+  transform: translateX(-100%);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-brand {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon-box {
+  width: 32px;
+  height: 32px;
+  background: #111827;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.sidebar-brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.sidebar-toggle-btn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #4B5563;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 2px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
+  transition: background 0.2s, color 0.2s;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-item:hover {
+  background: #F3F4F6;
+  color: #111827;
+}
+
+.sidebar-item-icon {
+  font-size: 18px;
+  color: inherit;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: var(--space-lg) 0;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: var(--space-lg);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-item.danger {
+  color: var(--accent-coral);
+}
+
+.sidebar-item.danger:hover {
+  background: rgba(244, 63, 94, 0.06);
+  color: var(--accent-coral);
+}
+
+/* ============================================
+   INFINITE CANVAS
+   ============================================ */
+.canvas-container {
+  flex: 1;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+  background-color: var(--canvas-bg);
+}
+
+.canvas-bg-solid {
+  background-image: none;
+}
+
+.canvas-bg-dots {
+  background-image: radial-gradient(circle, var(--canvas-dot) var(--canvas-dot-size), transparent var(--canvas-dot-size));
+  background-size: var(--canvas-dot-gap) var(--canvas-dot-gap);
+}
+
+.canvas-bg-grid {
+  background-image: 
+    linear-gradient(var(--canvas-dot) 1px, transparent 1px),
+    linear-gradient(90deg, var(--canvas-dot) 1px, transparent 1px);
+  background-size: var(--canvas-dot-gap) var(--canvas-dot-gap);
+}
+
+.canvas-bg-lines {
+  background-image: linear-gradient(var(--canvas-dot) 1px, transparent 1px);
+  background-size: 100% var(--canvas-dot-gap);
+}
+
+.canvas-container.grabbing {
+  cursor: grabbing;
+}
+
+.canvas-transform {
+  transform-origin: 0 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+/* ============================================
+   ZOOM CONTROLS
+   ============================================ */
+.zoom-controls {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--controls-bg);
+  backdrop-filter: blur(var(--controls-blur));
+  -webkit-backdrop-filter: blur(var(--controls-blur));
+  border-radius: var(--controls-radius);
+  padding: 4px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  z-index: 1000;
+  user-select: none;
+}
+
+.zoom-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 16px;
+  transition: all var(--transition-fast);
+}
+
+.zoom-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-primary);
+}
+
+.zoom-btn:active {
+  transform: scale(0.92);
+}
+
+.zoom-percentage {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 48px;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* ============================================
+   PIN WRAPPER (shared for all pin types)
+   ============================================ */
+.pin-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  touch-action: none;
+  border-radius: var(--card-radius);
+  z-index: 1;
+  perspective: 1200px; /* For 3D flip */
+  will-change: transform;
+}
+
+.pin-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+}
+
+.pin-wrapper.flipped .pin-inner {
+  transform: rotateY(180deg);
+}
+
+.pin-front, .pin-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.pin-back {
+  transform: rotateY(180deg);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: var(--card-radius);
+  border: 1.5px solid rgba(255, 255, 255, 1);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl);
+  pointer-events: auto;
+}
+
+.pin-edit-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 30;
+  color: var(--text-secondary);
+}
+
+.pin-wrapper:hover .pin-edit-btn {
+  opacity: 1;
+}
+
+.pin-edit-btn:hover {
+  background: #ffffff;
+  transform: scale(1.1);
+  color: var(--text-primary);
+}
+
+.pin-back-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--space-lg);
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.2);
+}
+
+.color-swatch.active {
+  border-color: #4b5563;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pin-wrapper.selected .pin-front .pin-card {
+  box-shadow: var(--card-shadow-selected);
+}
+
+.pin-wrapper .pin-actions {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all var(--transition-normal);
+  z-index: 10;
+}
+
+.pin-wrapper:hover .pin-actions,
+.pin-wrapper.selected .pin-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pin-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.pin-action-btn.delete {
+  background: var(--accent-coral);
+  color: white;
+}
+
+.pin-action-btn.delete:hover {
+  background: #e11d48;
+  transform: scale(1.1);
+}
+
+.pin-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  z-index: 20;
+}
+
+.pin-resize-handle::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid rgba(0, 0, 0, 0.15);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+  border-bottom-right-radius: 1px;
+}
+
+/* ============================================
+   PIN CARDS — Shared Styles
+   ============================================ */
+.pin-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: var(--card-radius);
+  border: 5px solid #ffffff;
+  padding: 2px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  transition: box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pin-wrapper:hover .pin-front .pin-card {
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* ---------- Note Pin ---------- */
+.note-pin {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.note-pin-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: var(--space-md);
+}
+
+
+
+.note-pin-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  border: none;
+  background: transparent;
+  resize: none;
+  outline: none;
+  width: 100%;
+  flex: 1;
+  font-family: inherit;
+}
+
+.note-pin-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: auto;
+  padding-top: var(--space-sm);
+}
+
+/* ---------- Quote Pin ---------- */
+.quote-pin {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.quote-pin-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-md);
+}
+
+.quote-pin-icon {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-purple);
+}
+
+.quote-pin-icon .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+}
+
+.quote-pin-marks {
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.08);
+  line-height: 0.5;
+  margin-bottom: var(--space-sm);
+}
+
+.quote-pin-text {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-style: italic;
+  font-weight: 450;
+  flex: 1;
+  border: none;
+  background: transparent;
+  resize: none;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+.quote-pin-author {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: var(--space-sm);
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+/* ---------- Link Pin ---------- */
+.link-pin {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.link-pin-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  flex: 1;
+}
+
+.link-pin-favicon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.link-pin-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.link-pin-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.link-pin-title svg {
+  flex-shrink: 0;
+}
+
+.link-pin-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.link-pin-url {
+  font-size: 11px;
+  color: var(--accent-primary);
+  padding: var(--space-sm) var(--space-lg);
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.link-pin-url:hover {
+  color: var(--accent-blue);
+}
+
+/* ---------- Image Pin ---------- */
+.image-pin {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.image-pin-preview {
+  flex: 1;
+  background: linear-gradient(135deg, #f0e6d6, #e0d4c4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 32px;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-pin-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  border: 4px solid white;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+
+.image-pin-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+}
+
+.image-pin-upload-icon {
+  font-size: 28px;
+  color: var(--text-muted);
+}
+
+.image-pin-upload-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+
+
+/* ---------- Video Pin ---------- */
+.video-pin {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.video-pin-thumbnail {
+  flex: 1;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+}
+
+.video-pin-play {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a2e;
+  font-size: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform var(--transition-fast);
+}
+
+.video-pin-thumbnail:hover .video-pin-play {
+  transform: scale(1.08);
+}
+
+.video-pin-controls {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.video-pin-control-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.video-pin-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.video-pin-info {
+  padding: var(--space-md) var(--space-lg);
+}
+
+.video-pin-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.video-pin-channel {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ---------- File Pin ---------- */
+.file-pin {
+  padding: var(--space-lg) var(--space-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  height: 100%;
+}
+
+.file-pin-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.file-pin-icon.pdf {
+  background: #fef2f2;
+  color: var(--accent-coral);
+}
+
+.file-pin-icon.doc {
+  background: #eff6ff;
+  color: var(--accent-blue);
+}
+
+.file-pin-icon.default {
+  background: #f5f3ff;
+  color: var(--accent-purple);
+}
+
+.file-pin-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-pin-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-pin-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ---------- Task Pin ---------- */
+.task-pin {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.task-pin-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: auto;
+}
+
+.task-pin-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+.task-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  width: fit-content;
+  transition: opacity 0.2s;
+}
+.task-status-badge:hover {
+  opacity: 0.8;
+}
+
+.status-draft { background: #f1f5f9; color: #334155; }
+.status-inprogress { background: #ffedd5; color: #ea580c; }
+.status-inreview { background: #eff6ff; color: #2563eb; }
+.status-completed { background: #dcfce7; color: #16a34a; }
+
+.task-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-pomodoro-wrapper {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.03);
+  padding: 12px 16px;
+  border-radius: 12px;
+}
+
+.task-pomodoro-timer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+}
+
+.task-pomodoro-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.pomodoro-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  border: 1px solid #d1d5db;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.pomodoro-btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+  color: var(--accent-blue);
+}
+
+.pomodoro-btn:active {
+  transform: scale(1.05) translateY(1px);
+  background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.empty-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================
+   HOVER ACTIONS
+   ============================================ */
+.pin-hover-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  transform: translateY(-4px);
+  z-index: 20;
+}
+
+.pin-wrapper:hover .pin-hover-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hover-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  cursor: pointer;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  border: 1px solid #d1d5db;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.hover-action-btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+  color: #111827;
+}
+
+.hover-action-btn:active {
+  transform: scale(1.05) translateY(1px);
+  background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.hover-action-btn.delete:hover {
+  color: #ef4444;
+  background: #fee2e2;
+  border-color: #fecaca;
+}
+
+/* ============================================
+   BOTTOM DOCK (Unified Zoom & Actions)
+   ============================================ */
+.bottom-dock-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.dock-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(0,0,0,0.1);
+  margin: 0 4px;
+}
+
+.dock-zoom-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
+  min-width: 44px;
+  text-align: center;
+  user-select: none;
+}
+
+.dock-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4B5563;
+  font-size: 18px;
+  background: transparent;
+  border: none;
+}
+
+/* ============================================
+   SKEUOMORPHIC BUTTON UTILITIES
+   ============================================ */
+.skeu-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  border: 1px solid #d1d5db;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.skeu-btn:active {
+  background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(1px);
+}
+
+.empty-state-icon {
+  font-size: 56px;
+  margin-bottom: var(--space-lg);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pin-wrapper {
+  animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  /* Layout is globally floating, no specific overrides needed here anymore */
+}
+
+/* Sidebar toggle button (previously mobile-menu-btn) */
+.mobile-menu-btn {
+  display: flex;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--controls-bg);
+  backdrop-filter: blur(var(--controls-blur));
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--text-secondary);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  z-index: 999; /* Just below sidebar's 1000 so it hides behind it when open */
+}
+
+/* ============================================
+   CONTEXT MENU OVERRIDES (for editable fields)
+   ============================================ */
+.pin-card input,
+.pin-card textarea {
+  cursor: text;
+}
+
+.pin-card input:focus,
+.pin-card textarea:focus {
+  cursor: text;
+}
+
+/* ============================================
+   EDIT INPUT OVERLAY
+   ============================================ */
+.edit-input-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInUp 0.15s ease;
+}
+
+.edit-input-modal {
+  background: white;
+  border-radius: 16px;
+  padding: var(--space-xl);
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.16);
+}
+
+.edit-input-modal h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+}
+
+.edit-input-modal input,
+.edit-input-modal textarea {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition-fast);
+  margin-bottom: var(--space-md);
+}
+
+.edit-input-modal input:focus,
+.edit-input-modal textarea:focus {
+  border-color: #9ca3af;
+  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.2);
+}
+
+.edit-input-modal textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.edit-input-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+  margin-top: var(--space-md);
+}
+
+.edit-input-actions button {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.edit-input-actions .cancel-btn {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-secondary);
+}
+
+.edit-input-actions .save-btn {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.edit-input-actions .save-btn:hover {
+  opacity: 0.9;
+}
