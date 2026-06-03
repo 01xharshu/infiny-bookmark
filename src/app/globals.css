@@ -18,11 +18,10 @@
   --card-shadow-selected: 0 0 0 3px #d1d5db, 0 16px 48px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 1);
   --card-border: 1px solid rgba(0, 0, 0, 0.04);
 
-  /* Sidebar */
-  --sidebar-bg: rgba(255, 255, 255, 0.82);
-  --sidebar-blur: 20px;
-  --sidebar-width: 220px;
-  --sidebar-border: 1px solid rgba(0, 0, 0, 0.06);
+  /* Bottom Nav */
+  --bottom-nav-bg: rgba(255, 255, 255, 0.82);
+  --bottom-nav-blur: 20px;
+  --bottom-nav-border: 1px solid rgba(0, 0, 0, 0.06);
   --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
 
   /* Typography */
@@ -119,70 +118,58 @@ body {
 }
 
 /* ============================================
-   SIDEBAR
+   BOTTOM NAV BAR (Replaces Sidebar)
    ============================================ */
-.sidebar {
+.bottom-nav-bar {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 260px;
-  height: 100vh;
-  background: #ffffff;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bottom-nav-bg);
+  backdrop-filter: blur(var(--bottom-nav-blur));
+  -webkit-backdrop-filter: blur(var(--bottom-nav-blur));
+  border: var(--bottom-nav-border);
+  border-radius: 24px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   z-index: 1000;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+.bottom-nav-item {
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
-  overflow-y: auto;
-  transition: transform var(--transition-smooth);
-  transform: translateX(-100%);
-}
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar-brand {
-  margin-bottom: 24px;
-  display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.brand-icon-box {
-  width: 32px;
-  height: 32px;
-  background: #111827;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.sidebar-brand h1 {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  color: #111827;
-  line-height: 1.2;
-}
-
-.sidebar-toggle-btn {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  gap: 6px;
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #4B5563;
+  border: none;
   cursor: pointer;
-  transition: background 0.2s;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 0.2s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.bottom-nav-item:hover {
+  color: var(--text-primary);
+  transform: translateY(-4px);
+}
+
+.bottom-nav-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.bottom-nav-divider {
+  width: 1px;
+  height: 32px;
 .sidebar-toggle-btn:hover {
   background: rgba(0, 0, 0, 0.04);
 }

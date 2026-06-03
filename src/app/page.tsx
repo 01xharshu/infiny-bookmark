@@ -677,7 +677,7 @@ function BottomDock() {
 }
 
 /* ============================================
-   SIDEBAR
+   BOTTOM NAV BAR
    ============================================ */
 const PIN_TYPES: { type: PinType; label: string; icon: React.ReactNode }[] = [
   { type: 'note', label: 'Notes', icon: <RiStickyNoteLine /> },
@@ -689,92 +689,88 @@ const PIN_TYPES: { type: PinType; label: string; icon: React.ReactNode }[] = [
   { type: 'file', label: 'Files', icon: <HiOutlinePaperClip /> },
 ];
 
-function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+function BottomNavBar() {
   const addPin = useCanvasStore((s) => s.addPin);
 
-  const handleAddPin = (type: PinType) => {
-    addPin(type);
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
+  const handleExport = () => {
+    const state = useCanvasStore.getState();
+    const data = JSON.stringify({ pins: state.pins, viewport: state.viewport });
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'infiny-board.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target?.result as string);
+            if (data.pins) {
+              useCanvasStore.setState({ pins: data.pins, viewport: data.viewport || { x: 0, y: 0, scale: 1 } });
+              useCanvasStore.getState().save();
+            }
+          } catch {
+            alert('Invalid file format');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
   };
 
   return (
-    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-      <div className="sidebar-brand">
-        <div className="brand-icon-box">
-          <BsAsterisk size={14} />
+    <div className="bottom-nav-bar">
+      {PIN_TYPES.map((pt) => (
+        <button
+          key={pt.type}
+          className="bottom-nav-item"
+          onClick={() => addPin(pt.type)}
+          title={`Add ${pt.label}`}
+        >
+          <div className="bottom-nav-icon skeu-btn">
+            {pt.icon}
+          </div>
+          <span>{pt.label}</span>
+        </button>
+      ))}
+
+      <div className="bottom-nav-divider" />
+
+      <button
+        className="bottom-nav-item"
+        onClick={handleExport}
+        title="Export Board"
+      >
+        <div className="bottom-nav-icon skeu-btn">
+          <HiOutlineDownload />
         </div>
-        <h1>Infiny board</h1>
-        <button className="sidebar-toggle-btn" onClick={onClose} title="Collapse sidebar">
-          <BsLayoutSidebar size={14} />
-        </button>
-      </div>
+        <span>Export</span>
+      </button>
 
-      <div className="sidebar-menu">
-        {PIN_TYPES.map((pt) => (
-          <button
-            key={pt.type}
-            className="sidebar-item skeu-btn"
-            onClick={() => handleAddPin(pt.type)}
-          >
-            <span className="sidebar-item-icon">{pt.icon}</span>
-            {pt.label}
-          </button>
-        ))}
-
-        <div className="sidebar-divider" style={{ margin: '16px 0', height: 1, background: 'rgba(0,0,0,0.04)' }} />
-
-        <button className="sidebar-item skeu-btn" onClick={() => {
-          const state = useCanvasStore.getState();
-          const data = JSON.stringify({ pins: state.pins, viewport: state.viewport });
-          const blob = new Blob([data], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'infiny-board.json';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }}>
-          <span className="sidebar-item-icon">
-            <HiOutlineDownload />
-          </span>
-          Export Board
-        </button>
-
-        <button className="sidebar-item" onClick={() => {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'application/json';
-          input.onchange = (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                try {
-                  const data = JSON.parse(event.target?.result as string);
-                  if (data.pins) {
-                    useCanvasStore.setState({ pins: data.pins, viewport: data.viewport || { x: 0, y: 0, scale: 1 } });
-                    useCanvasStore.getState().save();
-                  }
-                } catch {
-                  alert('Invalid file format');
-                }
-              };
-              reader.readAsText(file);
-            }
-          };
-          input.click();
-        }}>
-          <span className="sidebar-item-icon">
-            <HiOutlineUpload />
-          </span>
-          Import Board
-        </button>
-      </div>
-    </aside>
+      <button
+        className="bottom-nav-item"
+        onClick={handleImport}
+        title="Import Board"
+      >
+        <div className="bottom-nav-icon skeu-btn">
+          <HiOutlineUpload />
+        </div>
+        <span>Import</span>
+      </button>
+    </div>
   );
 }
 
@@ -949,7 +945,6 @@ function InfiniteCanvas() {
    MAIN PAGE
    ============================================ */
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [editingLinkPinId, setEditingLinkPinId] = useState<string | null>(null);
   const load = useCanvasStore((s) => s.load);
   const pins = useCanvasStore((s) => s.pins);
@@ -957,13 +952,6 @@ export default function Home() {
   useEffect(() => {
     load();
   }, [load]);
-
-  // Close sidebar on mobile by default
-  useEffect(() => {
-    if (window.innerWidth <= 768) {
-      setSidebarOpen(false);
-    }
-  }, []);
 
   // Global paste handler
   useEffect(() => {
@@ -1065,17 +1053,9 @@ export default function Home() {
 
   return (
     <div className="app-layout">
-      <button
-        className="mobile-menu-btn"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        id="mobile-menu-btn"
-        aria-label="Toggle sidebar"
-      >
-        <HiOutlineMenu />
-      </button>
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <InfiniteCanvas />
       <BottomDock />
+      <BottomNavBar />
       {editingLinkPin && (
         <LinkEditModal
           pin={editingLinkPin}
