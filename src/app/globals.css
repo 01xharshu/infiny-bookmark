@@ -5,23 +5,39 @@
 /* ---------- CSS Custom Properties ---------- */
 :root {
   /* Canvas */
-  --canvas-bg: #f5f0eb;
-  --canvas-dot: rgba(0, 0, 0, 0.04);
+  --canvas-bg: #faf9f8;
+  --canvas-dot: rgba(0, 0, 0, 0.05);
   --canvas-dot-size: 1px;
   --canvas-dot-gap: 28px;
 
   /* Cards */
   --card-bg: #ffffff;
-  --card-radius: 14px;
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.8);
-  --card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 1);
-  --card-shadow-selected: 0 0 0 3px #d1d5db, 0 16px 48px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 1);
+  --card-radius: 20px;
+  --card-shadow: 
+    0 10px 40px -10px rgba(0,0,0,0.15), 
+    0 4px 12px rgba(0,0,0,0.08),
+    inset 0 1px 1px rgba(255,255,255,1), 
+    inset 0 -2px 2px rgba(0,0,0,0.05),
+    inset 0 0 0 1px rgba(255,255,255,0.4);
+  --card-shadow-hover: 
+    0 20px 50px -10px rgba(0,0,0,0.2), 
+    0 8px 24px rgba(0,0,0,0.12),
+    0 0 0 4px rgba(255,255,255,0.4), 
+    inset 0 1px 1px rgba(255,255,255,1), 
+    inset 0 -2px 2px rgba(0,0,0,0.05),
+    inset 0 0 0 1px rgba(255,255,255,0.5);
+  --card-shadow-selected: 
+    0 24px 60px -10px rgba(0,0,0,0.25), 
+    0 12px 32px rgba(0,0,0,0.15),
+    inset 0 1px 1px rgba(255,255,255,1), 
+    inset 0 -2px 2px rgba(0,0,0,0.05),
+    inset 0 0 0 1px rgba(255,255,255,0.6);
   --card-border: 1px solid rgba(0, 0, 0, 0.04);
 
   /* Bottom Nav */
-  --bottom-nav-bg: rgba(255, 255, 255, 0.82);
-  --bottom-nav-blur: 20px;
-  --bottom-nav-border: 1px solid rgba(0, 0, 0, 0.06);
+  --bottom-nav-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(249, 250, 251, 0.7) 100%);
+  --bottom-nav-blur: 32px;
+  --bottom-nav-border: 1px solid rgba(255, 255, 255, 0.6);
   --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
 
   /* Typography */
@@ -50,7 +66,7 @@
   --quote-green: #e8f5e9;
 
   /* Zoom Controls */
-  --controls-bg: rgba(255, 255, 255, 0.88);
+  --controls-bg: rgba(255, 255, 255, 0.75);
   --controls-blur: 16px;
   --controls-radius: 12px;
 
@@ -135,7 +151,11 @@ body {
   align-items: center;
   gap: 16px;
   z-index: 1000;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 24px 48px -12px rgba(0, 0, 0, 0.2), 
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 1), 
+    inset 0 -2px 2px rgba(0, 0, 0, 0.05);
 }
 
 .bottom-nav-item {
@@ -154,24 +174,87 @@ body {
 
 .bottom-nav-item:hover {
   color: var(--text-primary);
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.05);
 }
 
 .bottom-nav-icon {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 2px 8px rgba(0,0,0,0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
 }
 
 .bottom-nav-divider {
   width: 1px;
   height: 32px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0 4px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.9) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--sidebar-shadow);
+  border-right: 1px solid rgba(0,0,0,0.05);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding: 0 8px;
+}
+
+.sidebar-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.sidebar-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
 .sidebar-toggle-btn:hover {
   background: rgba(0, 0, 0, 0.04);
+  color: var(--text-primary);
 }
 
 .sidebar-menu {
@@ -305,22 +388,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
   border-radius: 8px;
   cursor: pointer;
   color: var(--text-secondary);
   font-size: 16px;
   transition: all var(--transition-fast);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .zoom-btn:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
   color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .zoom-btn:active {
-  transform: scale(0.92);
+  transform: translateY(1px);
+  background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .zoom-percentage {
@@ -350,7 +444,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-style: preserve-3d;
 }
 
@@ -370,11 +464,11 @@ body {
 
 .pin-back {
   transform: rotateY(180deg);
-  background: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.85) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-radius: var(--card-radius);
-  border: 1.5px solid rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
@@ -433,19 +527,30 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .color-swatch:hover {
-  transform: scale(1.2);
+  transform: scale(1.15) translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.1);
 }
 
 .color-swatch.active {
   border-color: #4b5563;
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.1);
 }
 
 .pin-wrapper.selected .pin-front .pin-card {
@@ -474,24 +579,37 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: none;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   cursor: pointer;
   transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .pin-action-btn.delete {
-  background: var(--accent-coral);
+  background: linear-gradient(180deg, #fecaca 0%, #f87171 100%);
+  border-color: #ef4444;
   color: white;
+  box-shadow: 
+    0 2px 4px rgba(239, 68, 68, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .pin-action-btn.delete:hover {
-  background: #e11d48;
-  transform: scale(1.1);
+  background: linear-gradient(180deg, #fca5a5 0%, #ef4444 100%);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(239, 68, 68, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .pin-resize-handle {
@@ -520,12 +638,12 @@ body {
    PIN CARDS — Shared Styles
    ============================================ */
 .pin-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
   border-radius: var(--card-radius);
-  border: 5px solid #ffffff;
-  padding: 2px;
+  border: none;
+  padding: 6px;
   box-shadow: var(--card-shadow);
   overflow: hidden;
   width: 100%;
@@ -560,8 +678,9 @@ body {
 
 
 .note-pin-text {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
+  font-weight: 500;
   color: var(--text-primary);
   border: none;
   background: transparent;
@@ -745,12 +864,11 @@ body {
 .image-pin-preview img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-  border: 4px solid white;
-  border-radius: 8px;
+  border-radius: 14px;
   box-sizing: border-box;
   background-color: transparent;
 }
@@ -798,18 +916,26 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(240,240,240,0.9) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #1a1a2e;
   font-size: 18px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  transition: transform var(--transition-fast);
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-fast);
 }
 
 .video-pin-thumbnail:hover .video-pin-play {
-  transform: scale(1.08);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .video-pin-controls {
@@ -1013,25 +1139,29 @@ body {
   justify-content: center;
   color: var(--text-primary);
   cursor: pointer;
-  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
-  border: 1px solid #d1d5db;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .pomodoro-btn:hover {
-  transform: scale(1.1);
-  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
   color: var(--accent-blue);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
 }
 
 .pomodoro-btn:active {
-  transform: scale(1.05) translateY(1px);
+  transform: translateY(1px);
   background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* ============================================
@@ -1076,31 +1206,39 @@ body {
   justify-content: center;
   color: #4b5563;
   cursor: pointer;
-  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
-  border: 1px solid #d1d5db;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hover-action-btn:hover {
-  transform: scale(1.1);
-  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
   color: #111827;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
 }
 
 .hover-action-btn:active {
-  transform: scale(1.05) translateY(1px);
+  transform: translateY(1px);
   background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hover-action-btn.delete:hover {
   color: #ef4444;
-  background: #fee2e2;
-  border-color: #fecaca;
+  background: linear-gradient(180deg, #fecaca 0%, #f87171 100%);
+  border-color: #ef4444;
+  box-shadow: 
+    0 4px 8px rgba(239, 68, 68, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1);
 }
 
 /* ============================================
@@ -1110,11 +1248,15 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: white;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
   padding: 8px 16px;
   border-radius: 9999px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
 }
 
 .dock-divider {
@@ -1150,19 +1292,30 @@ body {
    SKEUOMORPHIC BUTTON UTILITIES
    ============================================ */
 .skeu-btn {
-  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
-  border: 1px solid #d1d5db;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.skeu-btn:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.05);
 }
 
 .skeu-btn:active {
   background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
   transform: translateY(1px);
 }
 
@@ -1337,15 +1490,100 @@ body {
 }
 
 .edit-input-actions .cancel-btn {
-  background: rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
   color: var(--text-secondary);
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.05),
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -2px 1px rgba(0,0,0,0.05);
+}
+
+.edit-input-actions .cancel-btn:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0,0,0,0.08),
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -2px 1px rgba(0,0,0,0.05);
+}
+
+.edit-input-actions .cancel-btn:active {
+  background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  transform: translateY(1px);
 }
 
 .edit-input-actions .save-btn {
-  background: var(--accent-primary);
+  background: linear-gradient(180deg, var(--accent-primary) 0%, #374151 100%);
   color: white;
+  border: 1px solid #1f2937;
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.2),
+    inset 0 1px 1px rgba(255,255,255,0.2),
+    inset 0 -2px 1px rgba(0,0,0,0.2);
 }
 
 .edit-input-actions .save-btn:hover {
-  opacity: 0.9;
+  background: linear-gradient(180deg, #6b7280 0%, var(--accent-primary) 100%);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0,0,0,0.25),
+    inset 0 1px 1px rgba(255,255,255,0.2),
+    inset 0 -2px 1px rgba(0,0,0,0.2);
+}
+
+.edit-input-actions .save-btn:active {
+  background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  transform: translateY(1px);
+}
+
+.bottom-nav-item:hover .bottom-nav-icon {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  box-shadow: 
+    0 8px 24px -4px rgba(0,0,0,0.12), 
+    inset 0 1px 1px rgba(255,255,255,1), 
+    inset 0 -2px 1px rgba(0,0,0,0.05);
+  transform: translateY(-4px);
+  color: var(--accent-blue);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.bottom-nav-item:active .bottom-nav-icon {
+  background: linear-gradient(180deg, #e5e7eb 0%, #f3f4f6 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  transform: translateY(0);
+}
+
+@keyframes floatAnimation {
+  0% { transform: translate(-50%, -50%) translateY(0px); }
+  50% { transform: translate(-50%, -50%) translateY(-10px); }
+  100% { transform: translate(-50%, -50%) translateY(0px); }
+}
+
+.empty-state {
+  animation: floatAnimation 6s ease-in-out infinite;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.8;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.empty-state-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.empty-state-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
 }

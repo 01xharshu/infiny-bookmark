@@ -646,13 +646,13 @@ function BottomDock() {
       )}
       
       <div className="bottom-dock-pill skeu-btn" style={{ borderRadius: 9999 }}>
-        <button className="dock-icon-btn" onClick={zoomOut} title="Zoom out">
+        <button className="dock-icon-btn skeu-btn" onClick={zoomOut} title="Zoom out">
           <FiMinus />
         </button>
         <span className="dock-zoom-text" onClick={resetZoom} style={{ cursor: 'pointer' }}>
           {Math.round(viewport.scale * 100)}%
         </span>
-        <button className="dock-icon-btn" onClick={zoomIn} title="Zoom in">
+        <button className="dock-icon-btn skeu-btn" onClick={zoomIn} title="Zoom in">
           <FiPlus />
         </button>
         
@@ -661,13 +661,13 @@ function BottomDock() {
         <button 
           onClick={bentoLayout}
           title="Magic Bento Layout"
-          className="dock-icon-btn"
+          className="dock-icon-btn skeu-btn"
         >
           <HiOutlineSparkles />
         </button>
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="dock-icon-btn"
+          className="dock-icon-btn skeu-btn"
         >
           <HiOutlineCog />
         </button>
@@ -775,6 +775,86 @@ function BottomNavBar() {
 }
 
 /* ============================================
+   SIDEBAR
+   ============================================ */
+function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const addPin = useCanvasStore((s) => s.addPin);
+
+  const handleExport = () => {
+    const state = useCanvasStore.getState();
+    const data = JSON.stringify({ pins: state.pins, viewport: state.viewport });
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'infiny-board.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target?.result as string);
+            if (data.pins) {
+              useCanvasStore.setState({ pins: data.pins, viewport: data.viewport || { x: 0, y: 0, scale: 1 } });
+              useCanvasStore.getState().save();
+            }
+          } catch {
+            alert('Invalid file format');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  };
+
+  return (
+    <div className={`sidebar ${isOpen ? '' : 'closed'}`}>
+      <div className="sidebar-header">
+        <div className="sidebar-title">Infiny Board</div>
+        <button className="sidebar-toggle-btn" onClick={onClose}>
+          <IoClose size={20} />
+        </button>
+      </div>
+      <div className="sidebar-menu">
+        {PIN_TYPES.map((pt) => (
+          <button key={pt.type} className="sidebar-item" onClick={() => { addPin(pt.type); onClose(); }}>
+            <div className="sidebar-item-icon skeu-btn" style={{ width: 32, height: 32, borderRadius: 10, marginRight: 8 }}>{pt.icon}</div>
+            {pt.label}
+          </button>
+        ))}
+        <div className="sidebar-divider" />
+        <button className="sidebar-item" onClick={handleExport}>
+          <div className="sidebar-item-icon skeu-btn" style={{ width: 32, height: 32, borderRadius: 10, marginRight: 8 }}><HiOutlineDownload /></div>
+          Export Board
+        </button>
+        <button className="sidebar-item" onClick={handleImport}>
+          <div className="sidebar-item-icon skeu-btn" style={{ width: 32, height: 32, borderRadius: 10, marginRight: 8 }}><HiOutlineUpload /></div>
+          Import Board
+        </button>
+        <div className="sidebar-footer">
+          <button className="sidebar-item danger" onClick={() => { useCanvasStore.setState({ pins: [] }); onClose(); }}>
+            <div className="sidebar-item-icon skeu-btn" style={{ width: 32, height: 32, borderRadius: 10, marginRight: 8 }}><IoClose /></div>
+            Clear Canvas
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================
    ZOOM CONTROLS
    ============================================ */
 // Removed ZoomControls, now part of BottomDock
@@ -836,62 +916,41 @@ function InfiniteCanvas() {
   }, []);
 
   // Zoom or Pan on wheel
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      e.preventDefault();
-
-      if (e.altKey) {
-        // Zoom
-        const scaleFactor = e.deltaY > 0 ? 0.95 : 1.05;
-        const newScale = Math.min(
-          2,
-          Math.max(0.25, viewport.scale * scaleFactor)
-        );
-
-        // Zoom toward cursor position
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) return;
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        const newX = mouseX - (mouseX - viewport.x) * (newScale / viewport.scale);
-        const newY = mouseY - (mouseY - viewport.y) * (newScale / viewport.scale);
-
-        setViewport({ x: newX, y: newY, scale: newScale });
-      } else {
-        // Pan
-        setViewport({
-          x: viewport.x - e.deltaX,
-          y: viewport.y - e.deltaY,
-        });
-      }
-    },
-    [viewport, setViewport]
-  );
-
-  // Attach non-passive wheel listener
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const handler = (e: WheelEvent) => {
       e.preventDefault();
-      const scaleFactor = e.deltaY > 0 ? 0.95 : 1.05;
       const state = useCanvasStore.getState();
-      const newScale = Math.min(
-        2,
-        Math.max(0.25, state.viewport.scale * scaleFactor)
-      );
-      const rect = el.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      const newX =
-        mouseX -
-        (mouseX - state.viewport.x) * (newScale / state.viewport.scale);
-      const newY =
-        mouseY -
-        (mouseY - state.viewport.y) * (newScale / state.viewport.scale);
-      state.setViewport({ x: newX, y: newY, scale: newScale });
+
+      if (e.ctrlKey || e.metaKey) {
+        // Zoom
+        // Smooth scaling for trackpads (small deltaY) and mice (large deltaY)
+        const zoomSensitivity = 0.01;
+        const scaleFactor = Math.exp(-e.deltaY * zoomSensitivity);
+        const newScale = Math.min(
+          3,
+          Math.max(0.1, state.viewport.scale * scaleFactor)
+        );
+
+        const rect = el.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const newX = mouseX - (mouseX - state.viewport.x) * (newScale / state.viewport.scale);
+        const newY = mouseY - (mouseY - state.viewport.y) * (newScale / state.viewport.scale);
+
+        state.setViewport({ x: newX, y: newY, scale: newScale });
+      } else {
+        // Pan
+        state.setViewport({
+          x: state.viewport.x - e.deltaX,
+          y: state.viewport.y - e.deltaY,
+          scale: state.viewport.scale
+        });
+      }
     };
+
     el.addEventListener('wheel', handler, { passive: false });
     return () => el.removeEventListener('wheel', handler);
   }, []);
@@ -926,15 +985,7 @@ function InfiniteCanvas() {
         ))}
       </div>
 
-      {pins.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-state-icon">📌</div>
-          <div className="empty-state-title">Your canvas is empty</div>
-          <div className="empty-state-desc">
-            Use the sidebar to add notes, links, images, quotes, and more to your infinite canvas.
-          </div>
-        </div>
-      )}
+      {/* Empty state removed */}
 
       {/* BottomDock moved to Home */}
     </div>
@@ -946,6 +997,7 @@ function InfiniteCanvas() {
    ============================================ */
 export default function Home() {
   const [editingLinkPinId, setEditingLinkPinId] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const load = useCanvasStore((s) => s.load);
   const pins = useCanvasStore((s) => s.pins);
 
@@ -1053,6 +1105,10 @@ export default function Home() {
 
   return (
     <div className="app-layout">
+      <button className="mobile-menu-btn skeu-btn" onClick={() => setIsSidebarOpen(true)} title="Open Sidebar">
+        <BsLayoutSidebar size={20} />
+      </button>
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <InfiniteCanvas />
       <BottomDock />
       <BottomNavBar />
